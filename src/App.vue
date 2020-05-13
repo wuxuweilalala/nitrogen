@@ -10,7 +10,7 @@
   margin: 0;
   box-sizing: border-box;
 }
-  body {
-
-  }
+#app {
+  background-color: pink;
+}
 </style>
