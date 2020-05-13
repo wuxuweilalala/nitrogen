@@ -1,9 +1,6 @@
 <template>
-  <div>
     <v-chart  ref="ecInstance" :options="lineOption"  @mouseover.native="stopDataZoom"
               @mouseout.native="startDataZoom" />
-  </div>
-
 </template>
 
 <script>
