@@ -2,7 +2,7 @@
   <div>
     <Bar :barOption="barOption"></Bar>
     <LineChart :lineOption="lineOption"></LineChart>
-    <div @click="setImage">xxxx</div>
+    <div @click="screen">xxxx</div>
     <img :src="posterImg" alt="" style="height:200px;width:200px">
   </div>
 </template>
@@ -91,6 +91,7 @@ export default {
     };
   },
   methods:{
+    // 柱状图数据切换
     changeBarTime(){
       const barData = {
         0:()=>{
@@ -117,22 +118,49 @@ export default {
         barData[this.time]();
       },1000)
     },
+    // 使用 html2canvas 进行截图
     setImage(){
       const domObj = document.getElementById('app')
       html2canvas(domObj).then(canvas => {
         const imgUrl = canvas.toDataURL("image/png"); // 获取生成的图片的url
-        console.log(imgUrl)
         this.saveFile(imgUrl,'images.jpg')
       });
     },
+    // 下载图片
     saveFile(data, filename){
       const save_link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
       save_link.href = data;
       save_link.download = filename;
-
       const event = document.createEvent('MouseEvents');
       event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
       save_link.dispatchEvent(event);
+    },
+    // 全屏
+    screen(){
+      let element = document.documentElement;
+      if (this.fullscreen) {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitCancelFullScreen) {
+          document.webkitCancelFullScreen();
+        } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        }
+      } else {
+        if (element.requestFullscreen) {
+          element.requestFullscreen();
+        } else if (element.webkitRequestFullScreen) {
+          element.webkitRequestFullScreen();
+        } else if (element.mozRequestFullScreen) {
+          element.mozRequestFullScreen();
+        } else if (element.msRequestFullscreen) {
+          // IE11
+          element.msRequestFullscreen();
+        }
+      }
+      this.fullscreen = !this.fullscreen;
     }
   },
   mounted() {
