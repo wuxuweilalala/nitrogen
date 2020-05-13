@@ -3,7 +3,25 @@
     <Bar :barOption="barOption"></Bar>
     <LineChart :lineOption="lineOption"></LineChart>
     <div @click="screen">xxxx</div>
+    <div @click="exportExcel">xxxx</div>
     <img :src="posterImg" alt="" style="height:200px;width:200px">
+
+    <!-- echarts 图表数据导出为 excel表格 -->
+    <div style="display: block">
+      <table id="js_table_xlsx">
+        <tbody>
+        <tr>
+          <td></td>
+          <td v-for="(item,index) in lineOption.xAxis.data" :key="index"><span>{{item}}</span></td>
+        </tr>
+        <tr v-for="(list,i) in lineOption.series" :key="i">
+          <td>{{list.name}}</td>
+          <td v-for="(tdList,tdIndex) in list.data" :key="tdIndex"><span>{{tdList}}</span></td>
+        </tr>
+
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -11,7 +29,9 @@
 import Bar from "@/views/Bar.vue";
 import LineChart from "@/views/Line.vue";
 import echarts from "echarts";
-import html2canvas from 'html2canvas'
+import html2canvas from 'html2canvas';
+import FileSaver from 'file-saver';
+import XLSX from 'xlsx';
 export default {
   name: "index",
   components: {
@@ -161,6 +181,17 @@ export default {
         }
       }
       this.fullscreen = !this.fullscreen;
+    },
+    // 导出为 excel 图表
+    exportExcel () {
+      /* generate workbook object from table */
+      const wb = XLSX.utils.table_to_book(document.querySelector('#js_table_xlsx'))
+      /* get binary string as output */
+      const wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
+      try {
+        FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), '氮气用量.xlsx')
+      } catch (e) { if (typeof console !== 'undefined') console.log(e, wbout) }
+      return wbout
     }
   },
   mounted() {
