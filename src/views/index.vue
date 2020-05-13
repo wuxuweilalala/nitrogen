@@ -3,6 +3,7 @@
     <Header @setImage="setImage" @screen="screen"></Header>
 
     <section class="topSection">
+      <!-- 左边总览数据 -->
       <div class="leftSection">
         <div
           :class="[
@@ -17,6 +18,7 @@
           <span>{{ item.val }}</span>
         </div>
       </div>
+      <!-- 右边线体实时监测 -->
       <div class="rightSection">
         <el-table
           :data="tableData"
