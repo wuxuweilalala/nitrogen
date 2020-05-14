@@ -15,7 +15,7 @@ export function timeFormatter(params) {
     s = s < 10 ? ('0' + s) : s;
     // let w = this.getWeek(time.getDay());
     let obj = {};
-    obj.date = y + '/' + month + '/' + d;
+    obj.date = y + '-' + month + '-' + d;
     obj.nowTime = h + ':' + m + ':' + s;
     // obj.w = w;
     if (params && params.format) {

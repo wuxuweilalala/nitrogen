@@ -7,9 +7,18 @@ const routes = [
   {
     path: '/',
     name: '',
-    component: () => import(/* webpackChunkName: "about" */ '../views/index.vue')
+    component: () => import( '../views/index.vue')
   },
-
+  {
+    path: '/device',
+    name: 'device',
+    component: () => import( '../views/DevicePopup.vue')
+  },
+  {
+    path: '/warn',
+    name: 'warn',
+    component: () => import( '../views/WarnPopup')
+  },
 ]
 
 const router = new VueRouter({
