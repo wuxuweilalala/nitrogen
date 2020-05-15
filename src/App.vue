@@ -91,5 +91,6 @@
     background: url('~@/assets/imgs/bodyBg.png') no-repeat;
     background-size: 100% 100%;
     padding:0 5.2vw 0 5.8vw;
+    overflow: hidden;
   }
 </style>

@@ -34,10 +34,11 @@
                 </div>
               </div>
               <el-date-picker
-                v-model="value1"
-                type="datetime"
-                placeholder="选择日期时间"
-              >
+                      v-model="value1"
+                      type="daterange"
+                      range-separator=""
+                      start-placeholder="选择时间段"
+                      end-placeholder="">
               </el-date-picker>
             </div>
             <div class="chartWrapper">
@@ -62,7 +63,7 @@
           <div class="bottomList">
             <div class="header">
               <div class="leftSide">
-                <span class="name">顺时曲线</span>
+                <span class="name">瞬时曲线</span>
                 <div class="bottomSide">
                   <span class="englishName">Clockwise curve</span>
                   <div class="first"></div>
@@ -539,6 +540,34 @@ export default {
 .el-table th.is-leaf {
   border: none;
 }
+.el-range-editor.el-input__inner {
+  width: 11.32vw;
+  height: 2.78vh;
+  border: 1px solid #005d5d;
+}
+.el-date-editor .el-range-input, .el-date-editor  {
+  font-size: 0.75vw;
+  color: #fff;
+  background-color: unset;
+}
+.el-range-separator {
+  display: none;
+}
+.el-input__inner{
+  background-color: unset;
+}
+.el-icon-date:before {
+  display: none;
+}
+.el-date-editor .el-range__icon {
+  display: none;
+}
+.el-date-editor .el-range__close-icon {
+  line-height: 1.9vh;
+}
+.el-date-editor .el-range-input {
+  width: 4vw;
+}
 </style>
 <style lang="scss" scoped>
 .container {
@@ -644,9 +673,11 @@ export default {
               cursor: pointer;
               width: 9.32vw;
               .el-input__inner {
-                background-color: #005d5d;
+                background-color: unset;
                 padding: 0 10px !important;
                 height: 2.78vh;
+                font-size: 0.75vw;
+                border: 1px solid #005d5d;
               }
               .el-input__prefix {
                 display: none;
@@ -771,4 +802,79 @@ export default {
     }
   }
 }
+</style>
+<style lang="scss">
+  .el-button+.el-button {
+    background-color: unset;
+    border: none;
+    color: #409EFF;
+  }
+  .el-button.is-plain:focus, .el-button.is-plain:hover{
+    background-color: unset;
+  }
+  .el-date-picker__time-header {
+    border-bottom: 1px solid #00ffff;
+  }
+  .el-picker-panel__footer {
+    border-top: 1px solid #00ffff;
+  }
+  .el-input__inner {
+    border: 1px solid #00ffff;
+  }
+  .el-date-range-picker__content.is-left {
+    border-right: 1px solid #00ffff;
+  }
+  .el-picker-panel {
+    border: 1px solid #00ffff;
+  }
+  .el-picker-panel__body-wrapper {
+    background-color: #020b0c ;
+  }
+  .el-date-table td {
+    color: #fff;
+  }
+  .el-date-range-picker__content .el-date-range-picker__header div {
+    color: #fff;
+  }
+  .el-date-table th {
+    color: #00ffff;
+    border-bottom: 1px solid #00ffff;
+  }
+  .el-picker-panel__icon-btn {
+    color: #00ffff;
+  }
+  .el-date-table td.today {
+    background-color: #00ffff;
+    border-radius: 50%;
+    span {
+      color: #000000;
+    }
+  }
+  .el-date-table td.in-range div, .el-date-table td.in-range div:hover, .el-date-table.is-week-mode .el-date-table__row.current div, .el-date-table.is-week-mode .el-date-table__row:hover div {
+    background-color: rgba(0,255,255,0.2);
+  }
+  .el-date-table td.end-date span, .el-date-table td.start-date span {
+    background-color: #00ffff;
+    color: #000000;
+    width: 31px;
+    height: 28px;
+  }
+  .el-picker-panel__footer {
+    background-color: #020b0c ;
+  }
+  .el-date-picker__header-label {
+    color: #ffffff;
+  }
+  .el-time-panel {
+    background-color: #020b0c;
+  }
+  .el-time-spinner__item {
+    color: #fff;
+  }
+  .el-time-spinner__item.active:not(.disabled) {
+    color: #00ffff;
+  }
+  .el-time-spinner__item:hover:not(.disabled):not(.active) {
+    background-color: unset;
+  }
 </style>

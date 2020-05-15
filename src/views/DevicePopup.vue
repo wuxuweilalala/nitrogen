@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" @click="statusPopupShow=false">
     <div class="return" @click="$router.push('/')">
       <Icon name="return"></Icon>
       <span>返回</span>
@@ -15,15 +15,23 @@
           </div>
         </div>
         <div class="icons">
-            <el-dropdown @command="handleCommand" trigger="click">
+            <div class="status" @click.stop="statusPopupShow = !statusPopupShow">
+                <span>正常状态</span>
+                <i class="el-icon-arrow-down el-icon--right"></i>
+            </div>
+            <div class="statusPopup" v-show="statusPopupShow">
+              <div class="popupList" @click="statusPopupShow=false">正常</div>
+              <div class="popupList" @click="statusPopupShow=false">异常</div>
+            </div>
+          <!--  <el-dropdown @command="handleCommand" trigger="click">
                 <el-button type="primary">
-                    正常状态<i class="el-icon-arrow-down el-icon--right"></i>
+                    正常状态<i class="el-icon-arrow-down el-icon&#45;&#45;right"></i>
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item command="1">正常</el-dropdown-item>
                     <el-dropdown-item command="2">异常</el-dropdown-item>
                 </el-dropdown-menu>
-            </el-dropdown>
+            </el-dropdown>-->
           <Icon name="downLoad" @click.native="exportExcel"></Icon>
         </div>
       </div>
@@ -60,6 +68,7 @@ export default {
   },
   data() {
     return {
+        statusPopupShow:false,
       formLabelWidth: "120px",
       gridData: [
         {
@@ -214,15 +223,6 @@ export default {
 };
 </script>
 
-<style>
-.el-table .warning-row1 {
-  background: rgba(0, 0, 0, 0.06);
-}
-
-.el-table .success-row1 {
-  background: rgba(0, 255, 255, 0.06);
-}
-</style>
 <style lang="scss" scoped>
 #myTabel {
   width: 100%;
@@ -309,18 +309,84 @@ export default {
         cursor: pointer;
       }
         .icons {
-            ::v-deep.el-dropdown {
-                margin-right: 1.09vw;
-                .el-button--primary {
-                    border-color:#005d5d;
-                    background-color:unset;
-                    width: 9.32vw;
-                    height: 1.56vw;
-                    padding: 0;
-                }
+            display: flex;
+          align-items: center;
+          position: relative;
+          .status {
+            color: #fff;
+            width: 9.32vw;
+            height: 2.78vh;
+            border: 1px solid #005d5d;
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            font-size: 0.75vw;
+            margin-right: 1.09vw;
+            cursor: pointer;
+          }
+          .statusPopup {
+            position: absolute;
+            color: #fff;
+            font-size: 0.75vw;
+            border: 1px solid #005d5d;
+            bottom: -5.7vh;
+            border-top: none;
+            .popupList {
+              width: 9.2vw;
+              height: 2.78vh;
+              cursor: pointer;
+              padding-left: 1.2vw;
+              display: flex;
+              align-items: center;
+              &:hover {
+                background-color: rgba(0,255,255,.2);
+                color: #00ffff;
+              }
             }
+          }
         }
     }
   }
 }
+</style>
+
+<style>
+    .el-dropdown-menu__item:focus, .el-dropdown-menu__item:not(.is-disabled):hover {
+        background-color: rgba(0,255,255,.2);
+        color: #00ffff;
+        display: none;
+    }
+    .el-popper[x-placement^=bottom] .popper__arrow {
+        display: none;
+        border-bottom-color: #005d5d;
+    }
+    .el-popper[x-placement^=bottom] .popper__arrow::after {
+        border-bottom-color: #005d5d;
+    }
+    .el-dropdown-menu {
+        background-color: #020b0c;
+        border: 1px solid #005d5d;
+        width: 9.32vw;
+        margin: 0;
+        border-top: none;
+    }
+    .el-popper[x-placement^=bottom] {
+        margin: 0;
+    }
+    .el-dropdown-menu__item {
+        color: #fff;
+        height: 2.78vh;
+        display: flex;
+        align-items: center;
+    }
+    .el-icon--right {
+        margin-left: 26px;
+    }
+    .el-table .warning-row1 {
+        background: rgba(0, 0, 0, 0.06);
+    }
+
+    .el-table .success-row1 {
+        background: rgba(0, 255, 255, 0.06);
+    }
 </style>
