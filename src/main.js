@@ -7,6 +7,9 @@ import {Table, TableColumn,  DatePicker,  Dialog,  Dropdown,
   DropdownItem,
   Button}  from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import axios from 'axios'
+
+
 Vue.use(Table);
 Vue.use(TableColumn);
 Vue.use(DatePicker);
@@ -16,6 +19,7 @@ Vue.use(DropdownMenu);
 Vue.use(DropdownItem);
 Vue.use(Button);
 Vue.config.productionTip = false
+Vue.prototype.axios = axios
 
 new Vue({
   router,

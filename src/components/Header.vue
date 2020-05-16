@@ -9,7 +9,7 @@
             </div>
         </div>
         <div class="center">
-            <img src="@/assets/imgs/headerText.png" alt="">
+            {{title}}
             <span>{{date}} {{nowTime}}</span>
         </div>
         <div class="right">
@@ -37,6 +37,11 @@
         },
         components:{
             Icon
+        },
+        computed:{
+          title() {
+              return this.$store.state.title
+          }
         },
         beforeMount() {
             this.timer = setInterval(() => {

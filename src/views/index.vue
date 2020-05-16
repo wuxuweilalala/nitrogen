@@ -26,7 +26,7 @@
           <div class="bottomList">
             <div class="header">
               <div class="leftSide">
-                <span class="name">氮气用量</span>
+                <span class="name">{{barTitle}}</span>
                 <div class="bottomSide">
                   <span class="englishName">Nitrogen dosage</span>
                   <div class="first"></div>
@@ -44,15 +44,16 @@
             <div class="chartWrapper">
               <div class="chartHeader">
                 <div class="dateChange">
-                  <span :class="{ active: time === 2 }">近七天</span>
+                  <span  v-show="dateChangeShow" v-for="(item,index) in barChange"  :class="{ active: time === index }" :key="index">{{item}}</span>
+                <!--  <span :class="{ active: time === 2 }">近七天</span>
                   <span :class="{ active: time === 1 }">近四周</span>
-                  <span :class="{ active: time === 0 }">近三月</span>
+                  <span :class="{ active: time === 0 }">近三月</span>-->
                 </div>
                 <div class="rightIcon">
                   <div @click="exportExcel('js_table_xlsx', '氮气用量')">
                     <Icon name="downLoad"></Icon>
                   </div>
-                  <div>
+                  <div @click="refreshBar">
                     <Icon name="refresh"></Icon>
                   </div>
                 </div>
@@ -60,10 +61,10 @@
               <Bar :barOption="barOption"></Bar>
             </div>
           </div>
-          <div class="bottomList">
+          <div class="bottomList line">
             <div class="header">
               <div class="leftSide">
-                <span class="name">瞬时曲线</span>
+                <span class="name">{{lineTitle}}</span>
                 <div class="bottomSide">
                   <span class="englishName">Clockwise curve</span>
                   <div class="first"></div>
@@ -71,7 +72,8 @@
                 </div>
               </div>
               <el-date-picker
-                v-model="value1"
+                      @change="setLineData"
+                v-model="value2"
                 type="datetime"
                 placeholder="选择日期时间"
               >
@@ -80,8 +82,7 @@
             <div class="chartWrapper">
               <div class="chartHeader">
                 <div class="dateChange">
-                  <span>今日</span>
-                  <span>昨日</span>
+                  <span v-for="(item,index) in lineChange" :key="index">{{item}}</span>
                 </div>
                 <div class="rightIcon">
                   <div @click="exportExcel('js_table_xlsx', '瞬时曲线')">
@@ -102,7 +103,7 @@
       <section class="rightSection">
         <div class="header">
           <div class="leftSide">
-            <span class="name">线体实时监测</span>
+            <span class="name">{{lineData.title}}</span>
             <div class="bottomSide">
               <span class="englishName">Line body real-time monitoring</span>
               <div class="first"></div>
@@ -120,15 +121,17 @@
             </td>
           </tr>
           <tr
-            v-for="(item, index) in lineData.data"
+            v-for="(item, index) in tableData"
             :key="index"
             :class="[{ tabelRow: index % 2 === 1, tabelRow1: index % 3 === 1 }]"
+            @click="setBarData(item)"
           >
-            <td class="name">{{ item.name }}</td>
+            <td v-for="(sonItem,sonIndex) in item" :key="sonIndex">{{sonItem}}</td>
+           <!-- <td class="name">{{ item.name }}</td>
             <td>{{ item.speed }}</td>
             <td>{{ item.ppm }}</td>
             <td>{{ item.speed }}</td>
-            <td class="control">{{ item.control }}</td>
+            <td class="control">{{ item.control }}</td>-->
           </tr>
         </table>
       </section>
@@ -172,22 +175,30 @@ export default {
   },
   data() {
     return {
+      dateChangeShow:true,
+      webSocket: null,
+      wsUrl: "ws://36.111.35.27:9501",
+      URL: "http://120.76.22.80:8089",
+      cid:'81b2ccac-ea0e-e711-80e8-a55521da1859',
       time: 0,
       value1: "",
+      value2: "",
       barTime: undefined,
       posterImg: "",
+      barTitle:'氮气用量',
+      lineTitle:'瞬时曲线',
       totalData: [
         {
-          name: "总设备数量",
+          name: "",
           englishName: "Total number of equipment",
-          val: 76,
+          val: 0,
           status: 0,
           type: 1
         },
         {
           name: "正常设备",
           englishName: "Normal equipment",
-          val: 70,
+          val: 0,
           status: 0,
           type: 1
         },
@@ -201,7 +212,7 @@ export default {
         {
           name: "报警设备",
           englishName: "Alarm equipment",
-          val: 6,
+          val: 0,
           status: 1,
           type: 2
         }
@@ -261,6 +272,9 @@ export default {
           }
         ]
       },
+      barData:[],
+      barChange:[],
+      lineChange:[],
       lineOption: {
         dataZoom: [
           {
@@ -347,69 +361,8 @@ export default {
         ]
       },
       lineData: {
-        title: "线体实时监控",
-        tableHeader: ["线体", "流速度", "PPM", "阀门开度", "控制模式"],
-        key: ["id", "name", "ppm"],
-        selectKey: "id",
-        data: [
-          {
-            id: "001",
-            name: "线体一",
-            speed: 40,
-            ppm: 80,
-            control: "自动"
-          },
-          {
-            id: "001",
-            name: "线体一",
-            speed: 40,
-            ppm: 80,
-            control: "自动"
-          },
-          {
-            id: "001",
-            name: "线体一",
-            speed: 40,
-            ppm: 80,
-            control: "自动"
-          },
-          {
-            id: "001",
-            name: "线体一",
-            speed: 40,
-            ppm: 80,
-            control: "自动"
-          },
-          {
-            id: "001",
-            name: "线体一",
-            speed: 40,
-            ppm: 80,
-            control: "自动"
-          },
-          {
-            id: "001",
-            name: "线体一",
-            speed: 40,
-            ppm: 80,
-            control: "自动"
-          },
-          {
-            id: "001",
-            name: "线体一",
-            speed: 40,
-            ppm: 80,
-            control: "自动"
-          },
-          {
-            id: "001",
-            name: "线体一",
-            speed: 40,
-            ppm: 80,
-            control: "自动"
-          }
-        ]
       },
+      currentLineId:'',
       tableData: [
         {
           id: "001",
@@ -435,9 +388,181 @@ export default {
     };
   },
   methods: {
+    setLineData(){
+      const date = document.querySelector('.line .el-input__inner').value;
+      this.getClockwise(this.currentLineId,date)
+      console.log(date);
+    },
+    // 获取瞬时曲线数据
+    getClockwise(selectKey,date){
+      this.axios.get('http://120.76.22.80:8089/api/bidata/showparadata',{
+        params:{
+          cid:this.cid,
+          selectKey,
+          date
+        }
+      }).then(res=>{
+        console.log('res');
+        console.log(res.data);
+        this.lineTitle = res.data.title;
+        this.lineChange = res.data.data.legend
+        this.lineOption.legend.data = res.data.data.legend;
+        this.lineOption.xAxis.data = JSON.parse(res.data.data.xAxis);
+        this.lineOption.series[0].name = res.data.data.series[0].name;
+        this.lineOption.series[0].data = JSON.parse(res.data.data.series[0].data);
+        this.lineOption.series[1].name = res.data.data.series[1].name;
+        this.lineOption.series[1].data = JSON.parse(res.data.data.series[1].data);
+      })
+    },
+    // 点击右边表格的每一项来切换柱状图的数据
+    setBarData(item){
+      this.value2='';
+      this.currentLineId =item[0];
+      clearInterval(this.barTime);
+      this.getNitrogen('init',item[0]);
+      this.getClockwise(item[0])
+    },
+    // 重置柱状图
+    refreshBar(){
+      this.value1 = "";
+      clearInterval(this.barTime);
+      this.changeBarTime();
+    },
+    getNitrogen(type,mid,timeType,startTime,endTime) {
+        this.axios.get('http://120.76.22.80:8089/api/bidata/getmeteruse',{
+          params:{
+            cid:this.cid,
+            mid,
+            timeType,
+            startTime,
+            endTime
+          }
+        }).then(res=>{
+          // 取消定时器
+          if(type === 'init') {
+            this.barTitle = res.data.title;
+            this.barData = res.data.data;
+            this.barChange= res.data.timeType;
+            this.changeBarTime()
+          }else {
+            this.dateChangeShow= false;
+            window.clearInterval(this.barTime);
+            this.barOption.xAxis.data = JSON.parse(res.data.data[0]).xAxis ;
+            this.barOption.series[0].data = JSON.parse(res.data.data[0]).series ;
+          }
+        })
+    },
+    getData(){
+      this.webSocket = new WebSocket(this.wsUrl);
+      this.webSocket.onmessage = evt=>{
+        const data = JSON.parse(evt.data);
+
+        let dataIndexTable = {
+          // 标题
+          bititle:()=>{
+            const title = data.bititle.title.split("'")[1];
+            this.$store.commit('setTitle',title)
+          },
+          // 总览数据
+          getalarmcount:()=>{
+            this.totalData = data.getalarmcount;
+          },
+          // 右侧表格数据
+          getmetermonitor:()=>{
+            data.getmetermonitor.tableHeader = JSON.parse(data.getmetermonitor.tableHeader)
+            data.getmetermonitor.data = JSON.parse(data.getmetermonitor.data);
+            this.lineData = data.getmetermonitor;
+            this.tableData = data.getmetermonitor.data;
+            this.currentLineId = data.getmetermonitor.data[0][0];
+          },
+          // 氮气用量数据
+          /*getmeteruse:()=>{
+            this.barTitle = data.getmeteruse.title;
+            this.barData = data.getmeteruse.data;
+            this.barChange= data.getmeteruse.timeType;
+          }*/
+        };
+
+        for (let key in dataIndexTable) {
+          if (key in data) {
+            dataIndexTable[key]();
+          }
+        }
+
+      };
+      this.webSocket.onopen =  evt=> {
+        var interfaceData = [{
+          time: 5000,
+          is_first: true,
+          data: [
+            {
+              url: this.URL + "/api/bidata/bititle",
+              key: "bititle",
+              type:'get',
+              is_ssl:false,
+              headers:'',
+              param:{"cid":this.cid}
+            }
+          ]
+        },
+          {
+            time: 5000,
+            is_first: true,
+            data: [
+              {
+                url: this.URL + "/api/bidata/getalarmcount",
+                key: "getalarmcount",
+                type: "get",
+                is_ssl: false,
+                headers: "",
+                param:{"cid":this.cid}
+              }
+            ]
+          },
+          {
+            time: 5000,
+            is_first: true,
+            data: [
+              {
+                url: this.URL + "/api/bidata/getmetermonitor",
+                key: "getmetermonitor",
+                type: "get",
+                is_ssl: false,
+                headers: "",
+                param:{"cid":this.cid}
+              }
+            ]
+          },
+       /*   {
+            time: 5000,
+            is_first: true,
+            data: [
+              {
+                url: this.URL + "/api/bidata/getmeteruse",
+                key: "getmeteruse",
+                type: "get",
+                is_ssl: false,
+                headers: "",
+                param:{"cid":this.cid,mid:this.tableData[0][0]}
+              }
+            ]
+          },*/
+        ];
+        this.webSocket.send(JSON.stringify(interfaceData));
+      };
+
+    },
     // 柱状图数据切换
     changeBarTime() {
-      const barData = {
+      this.dateChangeShow = true;
+      const barData1 = {};
+      this.barData.forEach((item,index)=>{
+        barData1[index] = ()=>{
+          this.barOption.xAxis.data = JSON.parse(item).xAxis ;
+          this.barOption.series[0].data = JSON.parse(item).series ;
+        }
+      })
+      /*const barData = {
         0: () => {
           // 近三月
           this.barOption.xAxis.data = ["3月", "4月", "5月"];
@@ -461,13 +586,14 @@ export default {
           ];
           this.barOption.series[0].data = [120, 200, 150, 80, 70, 110, 130];
         }
-      };
+      };*/
+      barData1[0]();
       this.barTime = setInterval(() => {
         this.time++;
-        if (this.time === 3) {
+        if (this.time === this.barData.length) {
           this.time = 0;
         }
-        barData[this.time]();
+        barData1[this.time]();
       }, 3000);
     },
     // 导出为 excel 图表
@@ -492,7 +618,6 @@ export default {
     },
     // 首页 table 组件 样式
     tableRowClassName({ row, rowIndex }) {
-      console.log(row);
       if (rowIndex === 1) {
         return "warning-row";
       } else if (rowIndex === 3) {
@@ -512,15 +637,39 @@ export default {
       }
     }
   },
+  watch:{
+    'tableData.length':{
+      handler(val){
+        this.getNitrogen('init',this.currentLineId);
+        this.getClockwise(this.currentLineId)
+      }
+    },
+    // 柱状图时间筛选
+    value1:{
+      handler(val){
+        if(val) {
+          this.$nextTick(()=>{
+            const startTime = document.querySelectorAll('.el-range-input')[0].value;
+            const endTime = document.querySelectorAll('.el-range-input')[1].value;
+            this.getNitrogen('change',this.currentLineId,'day',startTime,endTime)
+          });
+        }
+      }
+    }
+  },
   mounted() {
     // 动态改变柱状图数据(三个月，四周，七天)
-    this.changeBarTime();
+    //this.changeBarTime();
+    this.getData()
   },
   beforeDestroy() {
     window.clearInterval(this.barTime);
   }
 };
 </script>
+
+
+
 <style>
 .el-table .warning-row {
   background: rgba(255, 0, 0, 0.13);
@@ -779,6 +928,7 @@ export default {
           height: 4.44vh;
           color: #fff;
           text-align: center;
+          cursor: pointer;
           .name {
             color: #00ffb1;
           }
