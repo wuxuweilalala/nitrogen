@@ -42,6 +42,12 @@
         </tr>
       </table>
     </div>
+
+    <el-pagination
+            background
+            layout="prev, pager, next"
+            :total="totalPage">
+    </el-pagination>
   </div>
 </template>
 
@@ -56,6 +62,7 @@ export default {
   },
   data() {
     return {
+      totalPage:1,
       cid:'81b2ccac-ea0e-e711-80e8-a55521da1859',
       statusPopupShow:false,
       lineData: {
@@ -145,7 +152,8 @@ export default {
         res.data.data = JSON.parse(res.data.data);
         res.data.key = JSON.parse(res.data.key);
         res.data.tableHeader = JSON.parse(res.data.tableHeader);
-        this.lineData = res.data
+        this.lineData = res.data;
+        this.totalPages = res.data.totalPages;
       })
     },
     tableRowClassName({ row, rowIndex }) {
@@ -211,6 +219,7 @@ export default {
   }
 }
 .container {
+  margin-top: -4vh;
   .return {
     cursor: pointer;
     width: 6.09vw;
@@ -230,6 +239,7 @@ export default {
   .tableWrapper {
     border: 2px solid #00ffff;
     padding: 2.87vh 1.88vw 3.43vh 2.08vw;
+    height: 71.76vh;
     .header {
       display: flex;
       align-items: center;
@@ -312,6 +322,18 @@ export default {
 </style>
 
 <style>
+  .el-pagination.is-background .el-pager li:not(.disabled).active {
+    background-color: rgba(0,255,255,.8);
+  }
+  .el-pagination.is-background .btn-next, .el-pagination.is-background .btn-prev, .el-pagination.is-background .el-pager li {
+    background-color: unset;
+    border: 1px solid #00ffff;
+    color: #fff;
+  }
+  .el-pagination {
+    margin-top: 3.15vh;
+    text-align: center;
+  }
     .el-dropdown-menu__item:focus, .el-dropdown-menu__item:not(.is-disabled):hover {
         background-color: rgba(0,255,255,.2);
         color: #00ffff;

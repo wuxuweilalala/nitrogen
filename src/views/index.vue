@@ -116,7 +116,7 @@
         </div>
         <table id="myTabel" border="0" cellpadding="0" cellspacing="0">
           <tr class="tabelHeader">
-            <td v-for="(item, index) in lineData.tableHeader" :key="index">
+            <td v-for="(item, index) in lineData.tableHeader" v-if="selecteKeyIndex !== index" :key="index">
               {{ item }}
             </td>
           </tr>
@@ -126,7 +126,7 @@
             :class="[{ tabelRow: index % 2 === 1, tabelRow1: index % 3 === 1 }]"
             @click="setBarData(item)"
           >
-            <td v-for="(sonItem,sonIndex) in item" :key="sonIndex">{{sonItem}}</td>
+            <td v-for="(sonItem,sonIndex) in item" v-if="selecteKeyIndex !== sonIndex" :key="sonIndex">{{sonItem}}</td>
           </tr>
         </table>
       </section>
@@ -377,6 +377,7 @@ export default {
       },
       lineData: {
       },
+      selecteKeyIndex:0,
       currentLineId:'',
       tableData: [
         {
@@ -441,10 +442,10 @@ export default {
     // 点击右边表格的每一项来切换柱状图的数据
     setBarData(item){
       this.value2='';
-      this.currentLineId =item[0];
+      this.currentLineId = item[this.selecteKeyIndex];
       clearInterval(this.barTime);
-      this.getNitrogen('init',item[0]);
-      this.getClockwise(item[0])
+      this.getNitrogen('init',item[this.selecteKeyIndex]);
+      this.getClockwise(item[this.selecteKeyIndex])
     },
     // 重置柱状图
     refreshBar(){
@@ -497,9 +498,8 @@ export default {
             data.getmetermonitor.data = JSON.parse(data.getmetermonitor.data);
             this.lineData = data.getmetermonitor;
             this.tableData = data.getmetermonitor.data;
-            this.tableData.push(this.tableData[1])
-            this.tableData.push(this.tableData[1])
-            this.tableData.push(this.tableData[1])
+            const key = data.getmetermonitor.selectKey;
+            this.selecteKeyIndex = JSON.parse(data.getmetermonitor.key).indexOf(key);
             this.currentLineId = data.getmetermonitor.data[0][0];
           },
           // 氮气用量数据
@@ -910,7 +910,7 @@ export default {
       background-size: 100% 100%;
       width: 36.25vw;
       height: 75.93vh;
-      overflow-y: scroll;
+      overflow-y: auto;
       padding: 2.78vh 2.45vw 0 2.03vw;
       .header {
         display: flex;
@@ -954,7 +954,7 @@ export default {
       }
       #myTabel {
         width: 100%;
-        display: block;
+        //display: block;
         tr {
           height: 4.44vh;
           color: #fff;

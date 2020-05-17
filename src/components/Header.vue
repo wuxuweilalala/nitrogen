@@ -9,8 +9,10 @@
             </div>
         </div>
         <div class="center">
-            {{title}}
-            <span>{{date}} {{nowTime}}</span>
+            <div class="chineseName">
+                {{title}}
+            </div>
+            <span  class="englishName">{{date}} {{nowTime}}</span>
         </div>
         <div class="right">
             <div @click="$emit('screen')">
@@ -74,9 +76,13 @@ header {
         text-align: center;
         display: flex;
         flex-direction: column;
-        h1 {
+        .chineseName {
             font-size: 1.58vw;
+            background: linear-gradient(to right, #adc3f2, #e6ffd9);
+            -webkit-background-clip: text;
+            color: transparent;
         }
+
         span {
             font-size: 0.89vw;
         }

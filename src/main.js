@@ -5,7 +5,9 @@ import store from './store'
 import {Table, TableColumn,  DatePicker,  Dialog,  Dropdown,
   DropdownMenu,
   DropdownItem,
-  Button}  from 'element-ui';
+  Button,
+  Pagination
+}  from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import axios from 'axios'
 
@@ -18,6 +20,7 @@ Vue.use(Dropdown);
 Vue.use(DropdownMenu);
 Vue.use(DropdownItem);
 Vue.use(Button);
+Vue.use(Pagination);
 Vue.config.productionTip = false
 Vue.prototype.axios = axios
 
