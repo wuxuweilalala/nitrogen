@@ -1,13 +1,14 @@
 <template>
   <div id="app">
     <Header @setImage="setImage" @screen="screen"></Header>
-    <router-view />
+    <router-view  ref="myChild"  />
   </div>
 </template>
 
 <script>
   import Header from "./components/Header";
   import html2canvas from "html2canvas";
+  import echarts from 'echarts'
   export default  {
     components:{
       Header
@@ -76,6 +77,15 @@
         }
         this.fullscreen = !this.fullscreen;
       },
+    },
+    mounted() {
+      window.onresize=function(){
+        console.log(1);
+        const barChart = echarts.init(document.getElementById('barChart'));
+        const lineChart = echarts.init(document.getElementById('lineChart'));
+        barChart.resize();
+        lineChart.resize();
+      }
     }
   }
 </script>

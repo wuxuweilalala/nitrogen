@@ -7,7 +7,7 @@
     <div class="tableWrapper">
       <div class="header">
         <div class="leftSide">
-          <span class="name">设备列表</span>
+          <span class="name">{{lineData.title.split("'")[0]}}</span>
           <div class="bottomSide">
             <span class="englishName">Device List</span>
             <div class="first"></div>
@@ -15,26 +15,18 @@
           </div>
         </div>
         <div class="icons">
-            <div class="status" @click.stop="statusPopupShow = !statusPopupShow">
+           <!-- <div class="status" @click.stop="statusPopupShow = !statusPopupShow">
                 <span>正常状态</span>
-                <i class="el-icon-arrow-down el-icon--right"></i>
+                <i class="el-icon-arrow-down el-icon&#45;&#45;right"></i>
             </div>
             <div class="statusPopup" v-show="statusPopupShow">
-              <div class="popupList" @click="statusPopupShow=false">正常</div>
-              <div class="popupList" @click="statusPopupShow=false">异常</div>
-            </div>
-          <!--  <el-dropdown @command="handleCommand" trigger="click">
-                <el-button type="primary">
-                    正常状态<i class="el-icon-arrow-down el-icon&#45;&#45;right"></i>
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item command="1">正常</el-dropdown-item>
-                    <el-dropdown-item command="2">异常</el-dropdown-item>
-                </el-dropdown-menu>
-            </el-dropdown>-->
+              <div class="popupList" @click="changeData()">正常</div>
+              <div class="popupList" @click="statusPopupShow">异常</div>
+            </div>-->
           <Icon name="downLoad" @click.native="exportExcel"></Icon>
         </div>
       </div>
+
       <table id="myTabel" border="0" cellpadding="0" cellspacing="0">
         <tr class="tabelHeader">
           <td v-for="(item, index) in lineData.tableHeader" :key="index">
@@ -46,11 +38,7 @@
           :key="index"
           :class="[{ tabelRow: index % 2 === 1, tabelRow1: index % 2 !== 1 }]"
         >
-          <td class="name">{{ item.name }}</td>
-          <td>{{ item.speed }}</td>
-          <td>{{ item.ppm }}</td>
-          <td>{{ item.speed }}</td>
-          <td class="control">{{ item.control }}</td>
+          <td v-for="(list,sonIndex) in item" :key="sonIndex">{{ list }}</td>
         </tr>
       </table>
     </div>
@@ -68,30 +56,8 @@ export default {
   },
   data() {
     return {
-        statusPopupShow:false,
-      formLabelWidth: "120px",
-      gridData: [
-        {
-          id: "001",
-          position: "线体一",
-          status: "正常"
-        },
-        {
-          id: "001",
-          position: "线体一",
-          status: "正常"
-        },
-        {
-          id: "001",
-          position: "线体一",
-          status: "正常"
-        },
-        {
-          id: "001",
-          position: "线体一",
-          status: "正常"
-        }
-      ],
+      cid:'81b2ccac-ea0e-e711-80e8-a55521da1859',
+      statusPopupShow:false,
       lineData: {
         title: "线体实时监控",
         tableHeader: [
@@ -162,31 +128,26 @@ export default {
           }
         ]
       },
-      deviceData: {
-        title: "设备列表",
-        totalPages: 5,
-        number: 20,
-        currentPage: 4,
-        tableHeader: ["设备id", "设备位置", "设备状态"],
-        key: ["id", "position", "status"],
-        seachKey: "status",
-        seachKeyVal: ["正常", "异常"],
-        data: [
-          {
-            id: "001",
-            position: "线体一",
-            status: "正常"
-          },
-          {
-            id: "001",
-            position: "线体一",
-            status: "正常"
-          }
-        ]
-      }
     };
   },
+  mounted() {
+    this.getData()
+  },
   methods: {
+    getData(){
+      this.axios.get('http://120.76.22.80:8089/api/bidata/meterstatuslist',{
+        params:{
+          cid:this.cid,
+          status:this.$route.query.status
+        }
+      }).then(res=>{
+        console.log(res.data);
+        res.data.data = JSON.parse(res.data.data);
+        res.data.key = JSON.parse(res.data.key);
+        res.data.tableHeader = JSON.parse(res.data.tableHeader);
+        this.lineData = res.data
+      })
+    },
     tableRowClassName({ row, rowIndex }) {
       console.log(row);
       if (rowIndex % 2 === 1) {

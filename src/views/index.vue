@@ -50,7 +50,7 @@
                   <span :class="{ active: time === 0 }">近三月</span>-->
                 </div>
                 <div class="rightIcon">
-                  <div @click="exportExcel('js_table_xlsx', '氮气用量')">
+                  <div @click="exportExcel('bar', barTitle)">
                     <Icon name="downLoad"></Icon>
                   </div>
                   <div @click="refreshBar">
@@ -58,7 +58,7 @@
                   </div>
                 </div>
               </div>
-              <Bar :barOption="barOption"></Bar>
+              <Bar id="barChart" :barOption="barOption"></Bar>
             </div>
           </div>
           <div class="bottomList line">
@@ -85,7 +85,7 @@
                   <span v-for="(item,index) in lineChange" :key="index">{{item}}</span>
                 </div>
                 <div class="rightIcon">
-                  <div @click="exportExcel('js_table_xlsx', '瞬时曲线')">
+                  <div @click="exportExcel('line', lineTitle)">
                     <Icon name="downLoad"></Icon>
                   </div>
                   <div>
@@ -93,7 +93,7 @@
                   </div>
                 </div>
               </div>
-              <LineChart :lineOption="lineOption"></LineChart>
+              <LineChart id="lineChart" :lineOption="lineOption"></LineChart>
             </div>
           </div>
         </div>
@@ -127,11 +127,6 @@
             @click="setBarData(item)"
           >
             <td v-for="(sonItem,sonIndex) in item" :key="sonIndex">{{sonItem}}</td>
-           <!-- <td class="name">{{ item.name }}</td>
-            <td>{{ item.speed }}</td>
-            <td>{{ item.ppm }}</td>
-            <td>{{ item.speed }}</td>
-            <td class="control">{{ item.control }}</td>-->
           </tr>
         </table>
       </section>
@@ -139,7 +134,7 @@
 
     <!-- echarts 图表数据导出为 excel表格 -->
     <div style="display: none">
-      <table id="js_table_xlsx">
+      <table id="line">
         <tbody>
           <tr>
             <td></td>
@@ -153,6 +148,25 @@
               <span>{{ tdList }}</span>
             </td>
           </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="display: none">
+      <table id="bar">
+        <tbody>
+        <tr>
+          <td></td>
+          <td v-for="(item, index) in barOption.xAxis.data" :key="index">
+            <span>{{ item }}</span>
+          </td>
+        </tr>
+        <tr v-for="(list, i) in barOption.series" :key="i">
+          <td>{{ list.name }}</td>
+          <td v-for="(tdList, tdIndex) in list.data" :key="tdIndex">
+            <span>{{ tdList }}</span>
+          </td>
+        </tr>
         </tbody>
       </table>
     </div>
@@ -249,12 +263,12 @@ export default {
             show: false
           }
         },
-        height: "90%",
+        height: "80%",
         grid: {
           top: "5%",
           left: "3%",
           right: "4%",
-          bottom: "0%",
+          bottom: "5%",
           containLabel: true
         },
         series: [
@@ -291,11 +305,12 @@ export default {
           show: false,
           data: ["昨日", "今日"]
         },
+        height: "80%",
         grid: {
-          top: "3%",
+          top: "5%",
           left: "3%",
           right: "4%",
-          bottom: "3%",
+          bottom: "5%",
           containLabel: true
         },
         xAxis: {
@@ -388,6 +403,15 @@ export default {
     };
   },
   methods: {
+    initEchart(){
+      window.onresize=function(){
+        console.log(1);
+        const barChart = echarts.init(document.getElementById('barChart'));
+        const lineChart = echarts.init(document.getElementById('lineChart'));
+        barChart.resize();
+        lineChart.resize();
+      }
+    },
     setLineData(){
       const date = document.querySelector('.line .el-input__inner').value;
       this.getClockwise(this.currentLineId,date)
@@ -473,6 +497,9 @@ export default {
             data.getmetermonitor.data = JSON.parse(data.getmetermonitor.data);
             this.lineData = data.getmetermonitor;
             this.tableData = data.getmetermonitor.data;
+            this.tableData.push(this.tableData[1])
+            this.tableData.push(this.tableData[1])
+            this.tableData.push(this.tableData[1])
             this.currentLineId = data.getmetermonitor.data[0][0];
           },
           // 氮气用量数据
@@ -627,13 +654,14 @@ export default {
     },
     // dialog 展示
     diaLogShow(item) {
+      console.log(item);
       if (item.type === 0) return;
       if (item.type === 1) {
-        this.$router.push("/device");
+        this.$router.push(`/device?status=${item.status}`);
         return;
       }
       if (item.type === 2) {
-        this.$router.push("/warn");
+        this.$router.push(`/device?status=${item.status}`);
       }
     }
   },
@@ -881,6 +909,8 @@ export default {
       background: url("~@/assets/imgs/tabelBg.png");
       background-size: 100% 100%;
       width: 36.25vw;
+      height: 75.93vh;
+      overflow-y: scroll;
       padding: 2.78vh 2.45vw 0 2.03vw;
       .header {
         display: flex;
@@ -924,6 +954,7 @@ export default {
       }
       #myTabel {
         width: 100%;
+        display: block;
         tr {
           height: 4.44vh;
           color: #fff;
